@@ -1,5 +1,4 @@
 name: Main workflow
-
 on:
   issue_comment:
     types:
