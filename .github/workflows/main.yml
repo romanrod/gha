@@ -39,7 +39,7 @@ jobs:
           persist-credentials: false
 
       - name: visual tests
-        if: ${{github.event_name == 'issue_comment'}} && contains(github.event.comment.body, 'bot run visual tests')
+        if: contains(github.event.comment.body, 'bot run visual tests')
         run: echo "Running visual tests"
 
       - name: Create temploy
@@ -54,7 +54,7 @@ jobs:
 
       - name: Add temploy label if not present
         uses: actions/github-script@v3
-        if:  ${{github.event_name == 'issue_comment'}} && contains(github.event.comment.body, 'bot run temploy')
+        if:  contains(github.event.comment.body, 'bot run temploy')
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
