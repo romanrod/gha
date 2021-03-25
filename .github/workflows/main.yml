@@ -68,25 +68,36 @@ jobs:
               labels: ['temploy']
             })
 
-      - name: E2E
+      - name: Creat E2E check
         uses: LouisBrunner/checks-action@v1.1.1
         id: test
+        if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: End to end tests
+          conclusion: queued
+
+      - name: Run end-to-end tests
+        if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
+        run: echo 'Run tests'
+
+      - name: Update E2E check
+        uses: LouisBrunner/checks-action@v1.1.1
+        id: test
+        if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: End to end tests
           conclusion: success
 
-  end_to_end_tests:
-    name: End to end tests
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Run tests
-        uses: actions/checkout@v2
-        if: |
-          ${{github.event_name == 'pull_request'}} || (
-            ${{github.event_name == 'issue_comment'}} &&
-            contains(github.event.comment.body, 'bot run e2e') ||
-          )
-      - name: Run tests
-        run: echo 'Run end to end test'
+  # end_to_end_tests:
+  #   name: End to end tests
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Run tests
+  #       uses: actions/checkout@v2
+  #       if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
+  #     - name: Run tests
+  #       run: echo 'Run end to end test'
