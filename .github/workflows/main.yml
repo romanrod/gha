@@ -40,6 +40,7 @@ jobs:
 
       - name: visual tests
         if: ${{github.event_name == 'issue_comment'}} && contains(github.event.comment.body, 'bot run visual tests')
+        run: echo "Running visual tests"
 
       - name: Create temploy
         if: |
@@ -51,6 +52,7 @@ jobs:
             ${{github.event_name == 'issue_comment'}} &&
             contains(github.event.comment.body, 'bot run temploy') ||
           )
+        run: echo "Creating VM"
 
       - name: Add temploy label if not present
         uses: actions/github-script@v3
@@ -73,8 +75,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
       - name: Run tests
+      - uses: actions/checkout@v2
         if: |
           ${{github.event_name == 'pull_request'}} || (
             ${{github.event_name == 'issue_comment'}} &&
