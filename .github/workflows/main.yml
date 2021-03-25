@@ -68,7 +68,7 @@ jobs:
               labels: ['temploy']
             })
 
-      - name: Creat E2E check
+      - name: Create E2E check
         uses: LouisBrunner/checks-action@v1.1.1
         if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
         with:
