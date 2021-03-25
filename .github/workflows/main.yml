@@ -69,9 +69,8 @@ jobs:
             })
 
       - name: E2E
-          id: test
-        - uses: LouisBrunner/checks-action@v1.1.1
-          if: always()
+        uses: LouisBrunner/checks-action@v1.1.1
+        id: test
           with:
             token: ${{ secrets.GITHUB_TOKEN }}
             name: E2E
