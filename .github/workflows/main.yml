@@ -1,0 +1,80 @@
+on:
+  pull_request:
+    types: [opened, synchronize]
+  issue_comment:
+    types: [created]
+
+jobs:
+  lint_tests:
+    name: Lint and unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+  integration_tests:
+    name: Integration tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Integration tests
+        id: integration-test
+        run: echo 'run integration'
+
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: visual tests
+        if: ${{github.event_name == 'issue_comment'}} && contains(github.event.comment.body, 'bot run visual tests')
+
+      - name: Create temploy
+        if: |
+          (
+            ${{github.event_name == 'pull_request'}} &&
+            contains( github.event.pull_request.labels.*.name, 'temploy')
+
+          ) || (
+            ${{github.event_name == 'issue_comment'}} &&
+            contains(github.event.comment.body, 'bot run temploy') ||
+          )
+
+      - name: Add temploy label if not present
+        uses: actions/github-script@v3
+        if:  |
+          ${{github.event_name == 'issue_comment'}} &&
+          contains(github.event.comment.body, 'bot run temploy') &&
+          (!contains( github.event.pull_request.labels.*.name, 'temploy'))
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['temploy']
+            })
+
+  end_to_end_tests:
+    name: End to end tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        if: |
+          ${{github.event_name == 'pull_request'}} || (
+            ${{github.event_name == 'issue_comment'}} &&
+            contains(github.event.comment.body, 'bot run e2e') ||
+          )
