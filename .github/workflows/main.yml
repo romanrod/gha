@@ -1,10 +1,13 @@
 name: Main workflow
 
 on:
-  pull_request:
-    types: [opened, synchronize]
   issue_comment:
-    types: [created]
+    types:
+      - created
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 jobs:
   lint_tests:
