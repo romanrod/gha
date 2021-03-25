@@ -43,18 +43,14 @@ jobs:
         run: echo "Running visual tests"
 
       - name: Create temploy
-        if: |
-          contains( github.event.pull_request.labels.*.name, 'temploy') ||
-          (
-            ${{github.event_name == 'issue_comment'}} &&
-            contains(github.event.comment.body, 'bot run temploy')
-          )
+        if: contains(github.event.pull_request.labels.*.name, 'temploy') || contains(github.event.comment.body, 'bot run temploy')
+
         run: |
           echo "Creating VM"
           echo ${{github.event_name == 'pull_request'}}
-          echo contains( github.event.pull_request.labels.*.name, 'temploy')
+          echo ${{contains( github.event.pull_request.labels.*.name, 'temploy')}}
           echo ${{github.event_name == 'issue_comment'}}
-          echo contains(github.event.comment.body, 'bot run temploy')
+          echo ${{contains(github.event.comment.body, 'bot run temploy')}}
 
       - name: Add temploy label if not present
         uses: actions/github-script@v3
