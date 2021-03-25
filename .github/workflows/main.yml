@@ -71,10 +71,10 @@ jobs:
       - name: E2E
         uses: LouisBrunner/checks-action@v1.1.1
         id: test
-          with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-            name: E2E
-            conclusion: success
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: E2E
+          conclusion: success
 
   end_to_end_tests:
     name: End to end tests
