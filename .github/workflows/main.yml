@@ -73,7 +73,7 @@ jobs:
         id: test
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: E2E
+          name: End to end tests
           conclusion: success
 
   end_to_end_tests:
