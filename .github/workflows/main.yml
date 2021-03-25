@@ -1,8 +1,13 @@
+name: Main workflow
+
 on:
-  pull_request:
-    types: [opened, synchronize]
   issue_comment:
-    types: [created]
+    types:
+      - created
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 jobs:
   lint_tests:
@@ -37,25 +42,22 @@ jobs:
           persist-credentials: false
 
       - name: visual tests
-        if: ${{github.event_name == 'issue_comment'}} && contains(github.event.comment.body, 'bot run visual tests')
+        if: contains(github.event.comment.body, 'bot run visual tests')
+        run: echo "Running visual tests"
 
       - name: Create temploy
-        if: |
-          (
-            ${{github.event_name == 'pull_request'}} &&
-            contains( github.event.pull_request.labels.*.name, 'temploy')
+        if: contains(github.event.pull_request.labels.*.name, 'temploy') || contains(github.event.comment.body, 'bot run temploy')
 
-          ) || (
-            ${{github.event_name == 'issue_comment'}} &&
-            contains(github.event.comment.body, 'bot run temploy') ||
-          )
+        run: |
+          echo "Creating VM"
+          echo ${{github.event_name == 'pull_request'}}
+          echo ${{contains( github.event.pull_request.labels.*.name, 'temploy')}}
+          echo ${{github.event_name == 'issue_comment'}}
+          echo ${{contains(github.event.comment.body, 'bot run temploy')}}
 
       - name: Add temploy label if not present
         uses: actions/github-script@v3
-        if:  |
-          ${{github.event_name == 'issue_comment'}} &&
-          contains(github.event.comment.body, 'bot run temploy') &&
-          (!contains( github.event.pull_request.labels.*.name, 'temploy'))
+        if:  contains(github.event.comment.body, 'bot run temploy')
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -71,8 +73,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
       - name: Run tests
+        uses: actions/checkout@v2
         if: |
           ${{github.event_name == 'pull_request'}} || (
             ${{github.event_name == 'issue_comment'}} &&
