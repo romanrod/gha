@@ -74,7 +74,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: End to end tests
-          conclusion: queued
+          status: in_progress
 
       - name: Run end-to-end tests
         if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
