@@ -47,7 +47,7 @@ jobs:
           contains( github.event.pull_request.labels.*.name, 'temploy') ||
           (
             ${{github.event_name == 'issue_comment'}} &&
-            contains(github.event.comment.body, 'bot run temploy') ||
+            contains(github.event.comment.body, 'bot run temploy')
           )
         run: |
           echo "Creating VM"
