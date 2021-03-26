@@ -80,7 +80,7 @@ jobs:
         if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
         run: |
           echo 'Run tests'
-          sleep 30
+          sleep 40
 
       - name: Update E2E check
         uses: LouisBrunner/checks-action@v1.1.1
