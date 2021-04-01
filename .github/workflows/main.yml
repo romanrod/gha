@@ -20,7 +20,7 @@ jobs:
           persist-credentials: false
       - name: bla
         run: |
-          echo "${{ github.event.action }}"
+          echo "${{ github.event }}"
   integration_tests:
     name: Integration tests
     runs-on: ubuntu-latest
