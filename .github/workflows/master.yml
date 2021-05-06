@@ -1,0 +1,24 @@
+name: Master
+
+on:
+  issue_comment:
+    types:
+      - created
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  master:
+    name: Master
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Print job url
+        run: echo ${{job.html_url}}
+
+      - name: Print job name
+        run: echo ${{job.name}}
