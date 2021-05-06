@@ -21,4 +21,4 @@ jobs:
         run: echo ${{ fromJson(job.html_url) }}
 
       - name: Print job name
-        run: echo `${{ fronJson(job.name) }}`
+        run: echo `${{ fromJson(job.name) }}`
