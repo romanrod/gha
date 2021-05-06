@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Print job url
-        run: echo ${{job.html_url}}
+        run: echo ${{ fromJson(job.html_url) }}
 
       - name: Print job name
-        run: echo ${{job.name}}
+        run: echo `${{ fronJson(job.name) }}`
