@@ -82,8 +82,6 @@ jobs:
           echo 'Run tests'
           sleep 40
 
-      - name: Update E2E check
-
       - name: Set status check
         uses: niteoweb/pull_request_status_action@v1.0.0
         if: ${{ github.event.inputs.pr-number != '' }}
