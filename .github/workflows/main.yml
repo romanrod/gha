@@ -68,13 +68,18 @@ jobs:
               labels: ['temploy']
             })
 
-      - name: Create E2E check
-        uses: LouisBrunner/checks-action@v1.1.1
-        if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
+      - name: Set status check
+        uses: niteoweb/pull_request_status_action@v1.0.0
+        if: ${{ github.event.inputs.pr-number != '' }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: End to end tests
-          status: in_progress
+          pr_number: ${{ github.event.inputs.pr-number }}
+          state: pending
+          repository: ${{ github.repository }}
+          # context: 'End-to-end / End-to-end tests matrix'
+          target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
 
       - name: Run end-to-end tests
         if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
