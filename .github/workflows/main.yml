@@ -80,7 +80,7 @@ jobs:
         if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
         run: |
           echo 'Run tests'
-          sleep 40
+          sleep 5
 
       - name: Set status check
         uses: niteoweb/pull_request_status_action@v1.0.0
@@ -89,7 +89,7 @@ jobs:
           pr_number: ${{ github.event.inputs.pr-number }}
           state: ${{ job.status }}
           repository: ${{ github.repository }}
-          context: 'End-to-end / End-to-end tests matrix'
+          # context: 'End-to-end / End-to-end tests matrix'
           target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
