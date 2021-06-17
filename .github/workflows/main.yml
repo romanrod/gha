@@ -77,8 +77,8 @@ jobs:
           repository: ${{ github.repository }}
           # context: 'End-to-end / End-to-end tests matrix'
           target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        # env:
-        #   GITHUB_TOKEN: ${{ github.token }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
 
       - name: Run end-to-end tests
@@ -96,5 +96,5 @@ jobs:
           repository: ${{ github.repository }}
           # context: 'End-to-end / End-to-end tests matrix'
           target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        # env:
-        #   GITHUB_TOKEN: ${{ github.token }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
