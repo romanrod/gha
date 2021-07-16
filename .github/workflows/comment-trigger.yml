@@ -14,8 +14,7 @@ jobs:
         with:
           route: GET ${{ github.event.issue.url }}
         env:
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: GITHUB_TOKEN
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fetch PR info
         uses: octokit/request-action@v2.x
@@ -23,8 +22,7 @@ jobs:
         with:
           route: GET ${{ fromJson(steps.fetch-issue.outputs.data).pull_request.url }}
         env:
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: GITHUB_TOKEN
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Dispatch e2e tests command
         uses: peter-evans/slash-command-dispatch@v2
