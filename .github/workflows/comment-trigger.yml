@@ -39,3 +39,4 @@ jobs:
             talent_profile_image_tag=${{ fromJson(steps.fetch_pr.outputs.data).head.ref }}
             pr_title=${{ fromJson(steps.fetch_issue.outputs.data).pull_request.title }}
             pr_url=${{ fromJson(steps.fetch_issue.outputs.data).pull_request.url }}
+
