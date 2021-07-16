@@ -1,0 +1,65 @@
+name: End-to-end tests
+
+env:
+  NPM_TOKEN: 'SOME_VAR'
+
+on:
+  workflow_dispatch:
+    inputs:
+      talent_profile_image_tag:
+        description: 'Image tag for Talent Profile'
+        required: true
+      pr_title:
+        description: 'Pull request title'
+        required: true
+      pr_url:
+        description: 'Pull request URL'
+        required: true
+
+
+jobs:
+  end_to_end_tests:
+    name: End to end tests on Platform
+    runs-on: ubuntu-latest
+    # if: github.event.comment.body == '@toptal-bot run e2e tests'
+    env:
+      # NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Set status check
+        uses: niteoweb/pull_request_status_action@v1.0.0
+        if: ${{ github.event.inputs.pr-number != '' }}
+        with:
+          pr_number: ${{ github.event.inputs.pr-number }}
+          state: pending
+          repository: ${{ github.event.inputs.pr-repository }}
+          context: 'End-to-end / End-to-end tests matrix'
+          target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOPTAL_DEVBOT_TOKEN }}
+
+      - name: Run tests
+        run: echo OK
+
+      # - name: Trigger platform-pr-features-talent-profile job
+      #   uses: toptal/jenkins-job-trigger-action@master
+      #   with:
+      #     jenkins_url: 'https://jenkins.toptal.net/'
+      #     jenkins_user: 'dempfi'
+      #     jenkins_token: ${{ secrets.JENKINS_TOKEN }}
+      #     job_name: 'talent-profile/job/platform-pr-features-talent-profile'
+      #     job_params: '{"talent_profile_image_tag":"${{ fromJson(steps.fetch_pr.outputs.data).head.ref }}", "ghprbTargetBranch":"master", "ghprbActualCommit":"master", "ghprbPullId":"", "remote":"true", "pr_title":"${{ fromJson(steps.fetch_issue.outputs.data).pull_request.title }}","pr_url":"${{ fromJson(steps.fetch_issue.outputs.data).pull_request.url }}"}'
+      #     job_timeout: '3600'
+
+      - name: Set status check
+        uses: niteoweb/pull_request_status_action@v1.0.0
+        if: ${{ github.event.inputs.pr-number != '' }}
+        with:
+          pr_number: ${{ github.event.inputs.pr-number }}
+          state: ${{ job.status }}
+          repository: ${{ github.event.inputs.pr-repository }}
+          context: 'End-to-end / End-to-end tests matrix'
+          target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.TOPTAL_DEVBOT_TOKEN }}

@@ -1,0 +1,41 @@
+name: Comment Trigger
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  slash_command:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch issue info
+        uses: octokit/request-action@v2.x
+        id: fetch-issue
+        with:
+          route: GET ${{ github.event.issue.url }}
+        env:
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: GITHUB_TOKEN
+
+      - name: Fetch PR info
+        uses: octokit/request-action@v2.x
+        id: fetch-pr
+        with:
+          route: GET ${{ fromJson(steps.fetch-issue.outputs.data).pull_request.url }}
+        env:
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: GITHUB_TOKEN
+
+      - name: Dispatch e2e tests command
+        uses: peter-evans/slash-command-dispatch@v2
+        with:
+          # token: ${{ secrets.TOPTAL_DEVBOT_TOKEN }}
+          token: token
+          issue-type: pull-request
+          dispatch-type: workflow
+          commands: |
+            run e2e
+          static-args: |
+            talent_profile_image_tag=${{ fromJson(steps.fetch_pr.outputs.data).head.ref }}
+            pr_title=${{ fromJson(steps.fetch_issue.outputs.data).pull_request.title }}
+            pr_url=${{ fromJson(steps.fetch_issue.outputs.data).pull_request.url }}

@@ -1,95 +1,95 @@
-name: Main workflow
+# name: Main workflow
 
-on:
-  issue_comment:
-    types:
-      - created
-  pull_request:
-    types:
-      - opened
-      - synchronize
+# on:
+#   issue_comment:
+#     types:
+#       - created
+#   pull_request:
+#     types:
+#       - opened
+#       - synchronize
 
-jobs:
-  lint_tests:
-    name: Lint and unit tests
-    runs-on: ubuntu-latest
+# jobs:
+#   lint_tests:
+#     name: Lint and unit tests
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           persist-credentials: false
 
-  integration_tests:
-    name: Integration tests
-    runs-on: ubuntu-latest
+#   integration_tests:
+#     name: Integration tests
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           persist-credentials: false
 
-      - name: Integration tests
-        id: integration-test
-        run: echo 'run integration'
+#       - name: Integration tests
+#         id: integration-test
+#         run: echo 'run integration'
 
-  build:
-    name: Build image
-    runs-on: ubuntu-latest
+#   build:
+#     name: Build image
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           persist-credentials: false
 
-      - name: visual tests
-        if: contains(github.event.comment.body, 'bot run visual tests')
-        run: echo "Running visual tests"
+#       - name: visual tests
+#         if: contains(github.event.comment.body, 'bot run visual tests')
+#         run: echo "Running visual tests"
 
-      - name: Create temploy
-        if: contains(github.event.pull_request.labels.*.name, 'temploy') || contains(github.event.comment.body, 'bot run temploy')
+#       - name: Create temploy
+#         if: contains(github.event.pull_request.labels.*.name, 'temploy') || contains(github.event.comment.body, 'bot run temploy')
 
-        run: |
-          echo "Creating VM"
-          echo ${{github.event_name == 'pull_request'}}
-          echo ${{contains( github.event.pull_request.labels.*.name, 'temploy')}}
-          echo ${{github.event_name == 'issue_comment'}}
-          echo ${{contains(github.event.comment.body, 'bot run temploy')}}
+#         run: |
+#           echo "Creating VM"
+#           echo ${{github.event_name == 'pull_request'}}
+#           echo ${{contains( github.event.pull_request.labels.*.name, 'temploy')}}
+#           echo ${{github.event_name == 'issue_comment'}}
+#           echo ${{contains(github.event.comment.body, 'bot run temploy')}}
 
-      - name: Add temploy label if not present
-        uses: actions/github-script@v3
-        if:  contains(github.event.comment.body, 'bot run temploy')
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.addLabels({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              labels: ['temploy']
-            })
+#       - name: Add temploy label if not present
+#         uses: actions/github-script@v3
+#         if:  contains(github.event.comment.body, 'bot run temploy')
+#         with:
+#           github-token: ${{secrets.GITHUB_TOKEN}}
+#           script: |
+#             github.issues.addLabels({
+#               issue_number: context.issue.number,
+#               owner: context.repo.owner,
+#               repo: context.repo.repo,
+#               labels: ['temploy']
+#             })
 
-      - name: Create E2E check
-        uses: LouisBrunner/checks-action@v1.1.1
-        if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: End to end tests
-          status: in_progress
+#       - name: Create E2E check
+#         uses: LouisBrunner/checks-action@v1.1.1
+#         if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           name: End to end tests
+#           status: in_progress
 
-      - name: Run end-to-end tests
-        if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
-        run: |
-          echo 'Run tests'
-          sleep 5
+#       - name: Run end-to-end tests
+#         if: ${{github.event_name == 'pull_request'}} || contains(github.event.comment.body, 'bot run e2e')
+#         run: |
+#           echo 'Run tests'
+#           sleep 5
 
-      - name: Set status check
-        uses: niteoweb/pull_request_status_action@v1.0.0
-        if: ${{ github.event.inputs.pr-number != '' }}
-        with:
-          pr_number: ${{ github.event.inputs.pr-number }}
-          state: ${{ job.status }}
-          repository: ${{ github.repository }}
-          # context: 'End-to-end / End-to-end tests matrix'
-          target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+#       - name: Set status check
+#         uses: niteoweb/pull_request_status_action@v1.0.0
+#         if: ${{ github.event.inputs.pr-number != '' }}
+#         with:
+#           pr_number: ${{ github.event.inputs.pr-number }}
+#           state: ${{ job.status }}
+#           repository: ${{ github.repository }}
+#           # context: 'End-to-end / End-to-end tests matrix'
+#           target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#         env:
+#           GITHUB_TOKEN: ${{ github.token }}
